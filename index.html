@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <link rel="manifest" href="/manifest.JSON">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalkulator Matrix</title>
     <style>
@@ -435,6 +436,15 @@
         .matrix-display[data-size="4x3"] { grid-template-columns: repeat(3, 1fr); }
     </style>
 </head>
+
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js")
+      .then(reg => console.log("Service Worker terdaftar", reg))
+      .catch(err => console.log("Gagal daftar SW", err));
+  }
+</script>
+
 <body>
     <div class="container">
         <h1>🧮 Kalkulator Matrix</h1>
