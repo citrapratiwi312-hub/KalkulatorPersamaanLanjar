@@ -1,0 +1,16 @@
+.matrix-box {
+  width: 60px;
+  height: 50px;
+  background: #ecb8b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+#steps {
+  background: #cbee8f;
+  padding: 15px;
+  border-left: 5px solid rgb(176, 245, 176);
+  white-space: pre-wrap;
+}

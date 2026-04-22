@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Matrix</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #b6edbe 0%, #edbfe0 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgb(238, 188, 202);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5em;
+        }
+
+        .control-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        input[type="number"] {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: #b5bfea;
+            color: rgb(9, 1, 1);
+        }
+
+        .btn-primary:hover {
+            background: #0b08d6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f093fb;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #da7eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
+        }
+
+        .btn-danger {
+            background: #e59292;
+            color: rgb(48, 16, 4);
+        }
+
+        .btn-danger:hover {
+            background: #ea8686;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .matrix-input-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .matrix-label {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .matrix-input {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 15px;
+            max-width: 400px;
+            justify-content: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Matrix input size specific styling */
+        .matrix-input[data-size="2x2"] {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .matrix-input[data-size="3x3"] {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .matrix-input[data-size="4x4"] {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .matrix-input[data-size="5x5"] {
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .matrix-input[data-size="2x3"] {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .matrix-input[data-size="3x2"] {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .matrix-input[data-size="2x4"] {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .matrix-input[data-size="4x2"] {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .matrix-input[data-size="3x4"] {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .matrix-input[data-size="4x3"] {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .matrix-row {
+            display: contents;
+        }
+
+        .matrix-input-box {
+            width: 70px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9em;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .matrix-input-box:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .matrix-display-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            font-weight: 600;
+            margin: 20px 0 15px 0;
+            color: #333;
+            font-size: 1.1em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .matrix-box {
+            width: 70px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .matrix-display {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 15px;
+            max-width: 400px;
+            justify-content: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Matrix size specific styling */
+        .matrix-display[data-size="2x2"] {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .matrix-display[data-size="3x3"] {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .matrix-display[data-size="4x4"] {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .matrix-display[data-size="5x5"] {
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .matrix-display[data-size="2x3"] {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .matrix-display[data-size="3x2"] {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .matrix-display[data-size="2x4"] {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .matrix-display[data-size="4x2"] {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .matrix-display[data-size="3x4"] {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .matrix-display[data-size="4x3"] {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .matrix-row-display {
+            display: contents;
+        }
+
+        .steps-section {
+            background: #f0f4ff;
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .steps-title {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        #steps {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            color: #333;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            color: #666;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            position: relative;
+            bottom: -2px;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-button:hover {
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .operation-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .op-button {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: #666;
+        }
+
+        .op-button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .op-button:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .empty-message {
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .control-section {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .matrix-input-box {
+                width: 60px;
+            }
+
+            .matrix-box {
+                width: 60px;
+                height: 50px;
+            }
+
+            .matrix-display, .matrix-input {
+                max-width: 300px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        /* Matrix size specific styling */
+        .matrix-display[data-size="2x2"] { grid-template-columns: repeat(2, 1fr); }
+        .matrix-display[data-size="3x3"] { grid-template-columns: repeat(3, 1fr); }
+        .matrix-display[data-size="4x4"] { grid-template-columns: repeat(4, 1fr); }
+        .matrix-display[data-size="5x5"] { grid-template-columns: repeat(5, 1fr); }
+        .matrix-display[data-size="2x3"] { grid-template-columns: repeat(3, 1fr); }
+        .matrix-display[data-size="3x2"] { grid-template-columns: repeat(2, 1fr); }
+        .matrix-display[data-size="2x4"] { grid-template-columns: repeat(4, 1fr); }
+        .matrix-display[data-size="4x2"] { grid-template-columns: repeat(2, 1fr); }
+        .matrix-display[data-size="3x4"] { grid-template-columns: repeat(4, 1fr); }
+        .matrix-display[data-size="4x3"] { grid-template-columns: repeat(3, 1fr); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧮 Kalkulator Matrix</h1>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('input')">Input Matrix</button>
+            <button class="tab-button" onclick="switchTab('operations')">Operasi Matrix</button>
+        </div>
+
+        <!-- Input Matrix Tab -->
+        <div id="input" class="tab-content active">
+            <div class="control-section">
+                <div class="input-group">
+                    <label for="rows">Jumlah Baris Matrix A:</label>
+                    <input type="number" id="rows" min="2" max="10" value="3">
+                </div>
+                <div class="input-group">
+                    <label for="cols">Jumlah Kolom Matrix A:</label>
+                    <input type="number" id="cols" min="2" max="10" value="3">
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-primary" onclick="generateMatrixInputs()">Buat Matrix</button>
+                <button class="btn-secondary" onclick="fillRandomMatrix()">Isi Random</button>
+                <button class="btn-danger" onclick="clearMatrices()">Bersihkan Semua</button>
+            </div>
+
+            <!-- Matrix A Input -->
+            <div class="matrix-input-section">
+                <div class="matrix-label">Matrix A</div>
+                <div id="matrixAInput" class="matrix-input"></div>
+            </div>
+
+            <!-- Matrix B Input (Optional) -->
+            <div class="matrix-input-section">
+                <div class="matrix-label">Matrix B (untuk operasi tertentu)</div>
+                <div class="input-group" style="margin-bottom: 10px;">
+                    <label for="colsB">Jumlah Kolom Matrix B:</label>
+                    <input type="number" id="colsB" min="2" max="10" value="3">
+                </div>
+                <button class="btn-primary" onclick="generateMatrixBInputs()" style="width: fit-content; margin-bottom: 15px;">Buat Matrix B</button>
+                <div id="matrixBInput" class="matrix-input"></div>
+            </div>
+        </div>
+
+        <!-- Operations Tab -->
+        <div id="operations" class="tab-content">
+            <div class="operation-tabs">
+                <button class="op-button active" onclick="selectOperation('determinant')">Determinan</button>
+                <button class="op-button" onclick="selectOperation('inverse')">Invers</button>
+                <button class="op-button" onclick="selectOperation('transpose')">Transpose</button>
+                <button class="op-button" onclick="selectOperation('add')">Penjumlahan</button>
+                <button class="op-button" onclick="selectOperation('subtract')">Pengurangan</button>
+                <button class="op-button" onclick="selectOperation('multiply')">Perkalian</button>
+                <button class="op-button" onclick="selectOperation('lu')">Dekomposisi LU</button>
+                <button class="op-button" onclick="selectOperation('rank')">Rank Matrix</button>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-primary" onclick="hitungOperasi()">Hitung Hasil</button>
+                <button class="btn-danger" onclick="clearResults()">Bersihkan Hasil</button>
+            </div>
+
+            <!-- Results -->
+            <div class="matrix-display-section" id="resultsSection" style="display: none;">
+                <div class="result-title">📊 Hasil Perhitungan</div>
+
+                <!-- Determinan Result -->
+                <div id="determinantResult" style="display: none;">
+                    <div style="background: #fff; padding: 15px; border-radius: 8px; border-left: 4px solid #4CAF50;">
+                        <strong>Determinan Matrix A:</strong>
+                        <div style="font-size: 1.5em; color: #4CAF50; font-weight: bold; margin-top: 10px;" id="detValue"></div>
+                    </div>
+                </div>
+
+                <!-- Inverse Result -->
+                <div id="inverseResult" style="display: none; margin-top: 20px;">
+                    <div style="margin-bottom: 15px;">
+                        <strong>Invers Matrix A:</strong>
+                        <div id="inverseMatrix" class="matrix-display"></div>
+                    </div>
+                </div>
+
+                <!-- Transpose Result -->
+                <div id="transposeResult" style="display: none; margin-top: 20px;">
+                    <div style="margin-bottom: 15px;">
+                        <strong>Transpose Matrix A:</strong>
+                        <div id="transposeMatrix" class="matrix-display"></div>
+                    </div>
+                </div>
+
+                <!-- Addition Result -->
+                <div id="addResult" style="display: none; margin-top: 20px;">
+                    <div style="margin-bottom: 15px;">
+                        <strong>Hasil A + B:</strong>
+                        <div id="addMatrix" class="matrix-display"></div>
+                    </div>
+                </div>
+
+                <!-- Subtraction Result -->
+                <div id="subtractResult" style="display: none; margin-top: 20px;">
+                    <div style="margin-bottom: 15px;">
+                        <strong>Hasil A - B:</strong>
+                        <div id="subtractMatrix" class="matrix-display"></div>
+                    </div>
+                </div>
+
+                <!-- Multiplication Result -->
+                <div id="multiplyResult" style="display: none; margin-top: 20px;">
+                    <div style="margin-bottom: 15px;">
+                        <strong>Hasil A × B:</strong>
+                        <div id="multiplyMatrix" class="matrix-display"></div>
+                    </div>
+                </div>
+
+                <!-- LU Decomposition Result -->
+                <div id="luResult" style="display: none; margin-top: 20px;">
+                    <div style="margin-bottom: 15px;">
+                        <strong>Matrix L (Lower):</strong>
+                        <div id="lMatrix" class="matrix-display"></div>
+                    </div>
+                    <div style="margin: 20px 0;">
+                        <strong>Matrix U (Upper):</strong>
+                        <div id="uMatrix" class="matrix-display"></div>
+                    </div>
+                </div>
+
+                <!-- Rank Result -->
+                <div id="rankResult" style="display: none; margin-top: 20px;">
+                    <div style="background: #fff; padding: 15px; border-radius: 8px; border-left: 4px solid #2196F3;">
+                        <strong>Rank Matrix A:</strong>
+                        <div style="font-size: 1.5em; color: #2196F3; font-weight: bold; margin-top: 10px;" id="rankValue"></div>
+                    </div>
+                </div>
+
+                <!-- Steps -->
+                <div class="steps-section" id="stepsContainer" style="display: none;">
+                    <div class="steps-title">📝 Langkah-Langkah Perhitungan</div>
+                    <pre id="steps"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentOperation = 'determinant';
+        let matrixA = [];
+        let matrixB = [];
+
+        // Switch between tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Select operation
+        function selectOperation(op) {
+            currentOperation = op;
+            document.querySelectorAll('.op-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Generate matrix inputs
+        function generateMatrixInputs() {
+            const rows = parseInt(document.getElementById('rows').value);
+            const cols = parseInt(document.getElementById('cols').value);
+            
+            if (rows < 2 || rows > 10 || cols < 2 || cols > 10) {
+                alert('Jumlah baris dan kolom harus antara 2-10');
+                return;
+            }
+
+            let html = '';
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    html += `<input type="number" class="matrix-input-box" id="a_${i}_${j}" step="0.01" value="0">`;
+                }
+            }
+            const container = document.getElementById('matrixAInput');
+            container.innerHTML = html;
+            container.setAttribute('data-size', `${rows}x${cols}`);
+            loadMatrixA();
+        }
+
+        // Generate matrix B inputs
+        function generateMatrixBInputs() {
+            const rows = matrixA.length;
+            const cols = parseInt(document.getElementById('colsB').value);
+            
+            if (cols < 2 || cols > 10) {
+                alert('Jumlah kolom harus antara 2-10');
+                return;
+            }
+
+            let html = '';
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    html += `<input type="number" class="matrix-input-box" id="b_${i}_${j}" step="0.01" value="0">`;
+                }
+            }
+            const container = document.getElementById('matrixBInput');
+            container.innerHTML = html;
+            container.setAttribute('data-size', `${rows}x${cols}`);
+            loadMatrixB();
+        }
+
+        // Load Matrix A
+        function loadMatrixA() {
+            const rows = parseInt(document.getElementById('rows').value);
+            const cols = parseInt(document.getElementById('cols').value);
+            matrixA = [];
+
+            for (let i = 0; i < rows; i++) {
+                let row = [];
+                for (let j = 0; j < cols; j++) {
+                    const val = parseFloat(document.getElementById(`a_${i}_${j}`).value) || 0;
+                    row.push(val);
+                }
+                matrixA.push(row);
+            }
+        }
+
+        // Load Matrix B
+        function loadMatrixB() {
+            const rows = matrixA.length;
+            const cols = parseInt(document.getElementById('colsB').value);
+            matrixB = [];
+
+            for (let i = 0; i < rows; i++) {
+                let row = [];
+                for (let j = 0; j < cols; j++) {
+                    const val = parseFloat(document.getElementById(`b_${i}_${j}`).value) || 0;
+                    row.push(val);
+                }
+                matrixB.push(row);
+            }
+        }
+
+        // Fill random values
+        function fillRandomMatrix() {
+            const rows = parseInt(document.getElementById('rows').value);
+            const cols = parseInt(document.getElementById('cols').value);
+
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const val = Math.floor(Math.random() * 20) - 10;
+                    document.getElementById(`a_${i}_${j}`).value = val;
+                }
+            }
+            loadMatrixA();
+        }
+
+        // Clear all
+        function clearMatrices() {
+            document.getElementById('matrixAInput').innerHTML = '';
+            document.getElementById('matrixBInput').innerHTML = '';
+            matrixA = [];
+            matrixB = [];
+            clearResults();
+        }
+
+        // Clear results
+        function clearResults() {
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('steps').textContent = '';
+        }
+
+        // Display matrix in result
+        function tampilkanMatrix(id, matrix) {
+            let container = document.getElementById(id);
+            container.innerHTML = '';
+
+            if (!matrix || matrix.length === 0) {
+                container.innerHTML = '<div class="empty-message">Tidak ada hasil</div>';
+                return;
+            }
+
+            // Set data-size attribute for styling
+            const rows = matrix.length;
+            const cols = matrix[0].length;
+            container.setAttribute('data-size', `${rows}x${cols}`);
+
+            // Flatten the matrix into a single array for grid display
+            const flatMatrix = matrix.flat();
+
+            flatMatrix.forEach(val => {
+                let box = document.createElement('div');
+                box.className = 'matrix-box';
+                box.textContent = typeof val === 'number' ? val.toFixed(4) : val;
+                container.appendChild(box);
+            });
+        }
+
+        // Matrix operations functions
+        function calculateDeterminant(matrix, steps = "") {
+            const n = matrix.length;
+            
+            if (matrix[0].length !== n) {
+                steps += "Error: Matrix harus persegi (n×n)\n";
+                return { det: NaN, steps };
+            }
+
+            if (n === 1) {
+                return { det: matrix[0][0], steps: "Det = " + matrix[0][0] };
+            }
+
+            if (n === 2) {
+                const det = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+                steps += `Det(A) = (${matrix[0][0]} × ${matrix[1][1]}) - (${matrix[0][1]} × ${matrix[1][0]})\n`;
+                steps += `Det(A) = ${matrix[0][0] * matrix[1][1]} - ${matrix[0][1] * matrix[1][0]}\n`;
+                steps += `Det(A) = ${det.toFixed(4)}\n`;
+                return { det, steps };
+            }
+
+            // Sarrus method or Gaussian elimination
+            let result = gaussianEliminationDet(matrix);
+            steps += result.steps;
+            return { det: result.det, steps };
+        }
+
+        function gaussianEliminationDet(matrix) {
+            let n = matrix.length;
+            let A = matrix.map(row => [...row]);
+            let steps = "Menggunakan Eliminasi Gaussian:\n\n";
+            let swaps = 0;
+
+            for (let i = 0; i < n; i++) {
+                // Find pivot
+                let maxRow = i;
+                for (let k = i + 1; k < n; k++) {
+                    if (Math.abs(A[k][i]) > Math.abs(A[maxRow][i])) {
+                        maxRow = k;
+                    }
+                }
+
+                if (maxRow !== i) {
+                    [A[i], A[maxRow]] = [A[maxRow], A[i]];
+                    swaps++;
+                    steps += `Swap baris ${i + 1} dan ${maxRow + 1}\n`;
+                }
+
+                if (Math.abs(A[i][i]) < 1e-10) {
+                    steps += "Determinan = 0 (Matrix singular)\n";
+                    return { det: 0, steps };
+                }
+
+                steps += `Langkah ${i + 1}: Pivot = ${A[i][i].toFixed(4)}\n`;
+
+                for (let k = i + 1; k < n; k++) {
+                    const factor = A[k][i] / A[i][i];
+                    for (let j = i; j < n; j++) {
+                        A[k][j] -= factor * A[i][j];
+                    }
+                    steps += `R${k + 1} = R${k + 1} - ${factor.toFixed(4)} × R${i + 1}\n`;
+                }
+                steps += '\n';
+            }
+
+            let det = 1;
+            for (let i = 0; i < n; i++) {
+                det *= A[i][i];
+            }
+
+            if (swaps % 2 === 1) {
+                det = -det;
+            }
+
+            steps += `Det(A) = ${det.toFixed(4)}`;
+            if (swaps > 0) {
+                steps += ` (setelah ${swaps} pertukaran baris)\n`;
+            } else {
+                steps += '\n';
+            }
+
+            return { det: det.toFixed(4), steps };
+        }
+
+        function calculateInverse(matrix) {
+            const n = matrix.length;
+            let steps = "Perhitungan Invers Matrix:\n\n";
+
+            if (matrix[0].length !== n) {
+                steps += "Error: Matrix harus persegi\n";
+                return { inverse: null, steps, det: NaN };
+            }
+
+            const detResult = calculateDeterminant(matrix);
+            const det = parseFloat(detResult.det);
+
+            if (Math.abs(det) < 1e-10) {
+                steps += "Error: Determinan = 0, Matrix tidak dapat diinvers (Singular)\n";
+                return { inverse: null, steps, det };
+            }
+
+            steps += `Det(A) = ${det.toFixed(4)}\n\n`;
+
+            if (n === 2) {
+                steps += "Menggunakan rumus untuk matrix 2×2:\n";
+                steps += "A⁻¹ = (1/det) × [d, -b; -c, a]\n\n";
+
+                const inv = [
+                    [matrix[1][1] / det, -matrix[0][1] / det],
+                    [-matrix[1][0] / det, matrix[0][0] / det]
+                ];
+
+                steps += `A⁻¹ = (1/${det.toFixed(4)}) × [${matrix[1][1]}, ${-matrix[0][1]}; ${-matrix[1][0]}, ${matrix[0][0]}]\n\n`;
+                steps += "Hasil Invers:\n";
+
+                return { inverse: inv, steps, det };
+            }
+
+            // Gauss-Jordan elimination for larger matrices
+            let augmented = matrix.map((row, i) => [...row, ...Array(n).fill(0).map((_, j) => i === j ? 1 : 0)]);
+            steps += "Menggunakan metode Gauss-Jordan:\n\n";
+
+            for (let i = 0; i < n; i++) {
+                // Find pivot
+                let maxRow = i;
+                for (let k = i + 1; k < n; k++) {
+                    if (Math.abs(augmented[k][i]) > Math.abs(augmented[maxRow][i])) {
+                        maxRow = k;
+                    }
+                }
+
+                [augmented[i], augmented[maxRow]] = [augmented[maxRow], augmented[i]];
+
+                const pivot = augmented[i][i];
+                for (let j = 0; j < 2 * n; j++) {
+                    augmented[i][j] /= pivot;
+                }
+
+                for (let k = 0; k < n; k++) {
+                    if (k !== i) {
+                        const factor = augmented[k][i];
+                        for (let j = 0; j < 2 * n; j++) {
+                            augmented[k][j] -= factor * augmented[i][j];
+                        }
+                    }
+                }
+            }
+
+            const inverse = augmented.map(row => row.slice(n));
+            steps += "Invers telah dihitung menggunakan Gauss-Jordan elimination\n";
+
+            return { inverse, steps, det };
+        }
+
+        function calculateTranspose(matrix) {
+            let steps = "Perhitungan Transpose Matrix:\n\n";
+            steps += "Transpose: baris menjadi kolom, kolom menjadi baris\n";
+            steps += `Original: ${matrix.length}×${matrix[0].length}\n`;
+            steps += `Transpose: ${matrix[0].length}×${matrix.length}\n\n`;
+
+            const transpose = Array(matrix[0].length).fill(0).map((_, i) =>
+                Array(matrix.length).fill(0).map((_, j) => matrix[j][i])
+            );
+
+            return { transpose, steps };
+        }
+
+        function addMatrices(matrixA, matrixB) {
+            let steps = "Penjumlahan Matrix A + B:\n\n";
+
+            if (matrixA.length !== matrixB.length || matrixA[0].length !== matrixB[0].length) {
+                steps += "Error: Dimensi matrix harus sama\n";
+                return { result: null, steps };
+            }
+
+            steps += `Dimensi: ${matrixA.length}×${matrixA[0].length}\n\n`;
+
+            const result = matrixA.map((row, i) =>
+                row.map((val, j) => {
+                    const sum = matrixA[i][j] + matrixB[i][j];
+                    steps += `C[${i}][${j}] = ${matrixA[i][j]} + ${matrixB[i][j]} = ${sum.toFixed(4)}\n`;
+                    return sum;
+                })
+            );
+
+            return { result, steps };
+        }
+
+        function subtractMatrices(matrixA, matrixB) {
+            let steps = "Pengurangan Matrix A - B:\n\n";
+
+            if (matrixA.length !== matrixB.length || matrixA[0].length !== matrixB[0].length) {
+                steps += "Error: Dimensi matrix harus sama\n";
+                return { result: null, steps };
+            }
+
+            steps += `Dimensi: ${matrixA.length}×${matrixA[0].length}\n\n`;
+
+            const result = matrixA.map((row, i) =>
+                row.map((val, j) => {
+                    const diff = matrixA[i][j] - matrixB[i][j];
+                    steps += `C[${i}][${j}] = ${matrixA[i][j]} - ${matrixB[i][j]} = ${diff.toFixed(4)}\n`;
+                    return diff;
+                })
+            );
+
+            return { result, steps };
+        }
+
+        function multiplyMatrices(matrixA, matrixB) {
+            let steps = "Perkalian Matrix A × B:\n\n";
+
+            if (matrixA[0].length !== matrixB.length) {
+                steps += `Error: Jumlah kolom A (${matrixA[0].length}) harus sama dengan jumlah baris B (${matrixB.length})\n`;
+                return { result: null, steps };
+            }
+
+            steps += `Dimensi A: ${matrixA.length}×${matrixA[0].length}\n`;
+            steps += `Dimensi B: ${matrixB.length}×${matrixB[0].length}\n`;
+            steps += `Hasil: ${matrixA.length}×${matrixB[0].length}\n\n`;
+
+            const result = Array(matrixA.length).fill(0).map((_, i) =>
+                Array(matrixB[0].length).fill(0).map((_, j) => {
+                    let sum = 0;
+                    let calc = '';
+                    for (let k = 0; k < matrixA[0].length; k++) {
+                        sum += matrixA[i][k] * matrixB[k][j];
+                        if (k > 0) calc += ' + ';
+                        calc += `${matrixA[i][k].toFixed(2)}×${matrixB[k][j].toFixed(2)}`;
+                    }
+                    steps += `C[${i}][${j}] = ${calc} = ${sum.toFixed(4)}\n`;
+                    return sum;
+                })
+            );
+
+            return { result, steps };
+        }
+
+        function luDecomposition(A) {
+            let n = A.length;
+            let steps = "Dekomposisi LU (Doolittle Method):\n\n";
+
+            if (A[0].length !== n) {
+                steps += "Error: Matrix harus persegi\n";
+                return { L: null, U: null, steps };
+            }
+
+            let L = Array.from({ length: n }, () => Array(n).fill(0));
+            let U = Array.from({ length: n }, () => Array(n).fill(0));
+
+            for (let i = 0; i < n; i++) {
+                L[i][i] = 1;
+            }
+
+            steps += "1. Inisialisasi L dengan diagonal = 1\n\n";
+
+            for (let i = 0; i < n; i++) {
+                steps += `Langkah ${i + 1}:\n`;
+
+                // Hitung U
+                for (let j = i; j < n; j++) {
+                    let sum = 0;
+                    let calc = '';
+                    for (let k = 0; k < i; k++) {
+                        sum += L[i][k] * U[k][j];
+                        if (k > 0) calc += ' + ';
+                        calc += `${L[i][k].toFixed(2)}×${U[k][j].toFixed(2)}`;
+                    }
+                    U[i][j] = A[i][j] - sum;
+                    if (i === 0) {
+                        steps += `  U[${i}][${j}] = ${A[i][j]} = ${U[i][j].toFixed(4)}\n`;
+                    } else {
+                        steps += `  U[${i}][${j}] = ${A[i][j]} - (${calc}) = ${U[i][j].toFixed(4)}\n`;
+                    }
+                }
+
+                // Hitung L
+                for (let j = i + 1; j < n; j++) {
+                    let sum = 0;
+                    let calc = '';
+                    for (let k = 0; k < i; k++) {
+                        sum += L[j][k] * U[k][i];
+                        if (k > 0) calc += ' + ';
+                        calc += `${L[j][k].toFixed(2)}×${U[k][i].toFixed(2)}`;
+                    }
+                    L[j][i] = (A[j][i] - sum) / U[i][i];
+                    if (i === 0) {
+                        steps += `  L[${j}][${i}] = ${A[j][i]} / ${U[i][i].toFixed(4)} = ${L[j][i].toFixed(4)}\n`;
+                    } else {
+                        steps += `  L[${j}][${i}] = (${A[j][i]} - (${calc})) / ${U[i][i].toFixed(4)} = ${L[j][i].toFixed(4)}\n`;
+                    }
+                }
+
+                steps += '\n';
+            }
+
+            return { L, U, steps };
+        }
+
+        function calculateRank(matrix) {
+            let steps = "Perhitungan Rank Matrix:\n\n";
+            const m = matrix.length;
+            const n = matrix[0].length;
+
+            steps += `Dimensi: ${m}×${n}\n`;
+            steps += "Menggunakan Row Echelon Form (REF):\n\n";
+
+            let A = matrix.map(row => [...row]);
+            let rank = 0;
+
+            for (let col = 0; col < n && rank < m; col++) {
+                let pivotRow = -1;
+
+                // Find pivot
+                for (let row = rank; row < m; row++) {
+                    if (Math.abs(A[row][col]) > 1e-10) {
+                        if (pivotRow === -1 || Math.abs(A[row][col]) > Math.abs(A[pivotRow][col])) {
+                            pivotRow = row;
+                        }
+                    }
+                }
+
+                if (pivotRow === -1) continue;
+
+                // Swap rows
+                [A[rank], A[pivotRow]] = [A[pivotRow], A[rank]];
+                steps += `Swap baris ${rank + 1} dan ${pivotRow + 1}\n`;
+
+                // Eliminate
+                for (let row = rank + 1; row < m; row++) {
+                    if (Math.abs(A[row][col]) > 1e-10) {
+                        const factor = A[row][col] / A[rank][col];
+                        for (let j = col; j < n; j++) {
+                            A[row][j] -= factor * A[rank][j];
+                        }
+                        steps += `R${row + 1} = R${row + 1} - ${factor.toFixed(4)} × R${rank + 1}\n`;
+                    }
+                }
+
+                rank++;
+                steps += '\n';
+            }
+
+            steps += `Rank Matrix = ${rank}\n`;
+            return { rank, steps };
+        }
+
+        // Main calculation function
+        function hitungOperasi() {
+            loadMatrixA();
+
+            if (matrixA.length === 0) {
+                alert('Silakan input Matrix A terlebih dahulu');
+                return;
+            }
+
+            document.getElementById('resultsSection').style.display = 'block';
+            document.querySelectorAll('[id$="Result"]').forEach(el => el.style.display = 'none');
+            document.getElementById('stepsContainer').style.display = 'none';
+
+            let result = {};
+            let showSteps = true;
+
+            switch (currentOperation) {
+                case 'determinant':
+                    if (matrixA.length !== matrixA[0].length) {
+                        alert('Matrix harus persegi untuk menghitung determinan');
+                        return;
+                    }
+                    result = calculateDeterminant(matrixA);
+                    document.getElementById('determinantResult').style.display = 'block';
+                    document.getElementById('detValue').textContent = result.det.toFixed(4);
+                    break;
+
+                case 'inverse':
+                    if (matrixA.length !== matrixA[0].length) {
+                        alert('Matrix harus persegi untuk menghitung invers');
+                        return;
+                    }
+                    result = calculateInverse(matrixA);
+                    if (result.inverse) {
+                        document.getElementById('inverseResult').style.display = 'block';
+                        tampilkanMatrix('inverseMatrix', result.inverse);
+                    }
+                    break;
+
+                case 'transpose':
+                    result = calculateTranspose(matrixA);
+                    document.getElementById('transposeResult').style.display = 'block';
+                    tampilkanMatrix('transposeMatrix', result.transpose);
+                    break;
+
+                case 'add':
+                    loadMatrixB();
+                    if (matrixB.length === 0) {
+                        alert('Silakan input Matrix B terlebih dahulu');
+                        return;
+                    }
+                    result = addMatrices(matrixA, matrixB);
+                    if (result.result) {
+                        document.getElementById('addResult').style.display = 'block';
+                        tampilkanMatrix('addMatrix', result.result);
+                    }
+                    break;
+
+                case 'subtract':
+                    loadMatrixB();
+                    if (matrixB.length === 0) {
+                        alert('Silakan input Matrix B terlebih dahulu');
+                        return;
+                    }
+                    result = subtractMatrices(matrixA, matrixB);
+                    if (result.result) {
+                        document.getElementById('subtractResult').style.display = 'block';
+                        tampilkanMatrix('subtractMatrix', result.result);
+                    }
+                    break;
+
+                case 'multiply':
+                    loadMatrixB();
+                    if (matrixB.length === 0) {
+                        alert('Silakan input Matrix B terlebih dahulu');
+                        return;
+                    }
+                    result = multiplyMatrices(matrixA, matrixB);
+                    if (result.result) {
+                        document.getElementById('multiplyResult').style.display = 'block';
+                        tampilkanMatrix('multiplyMatrix', result.result);
+                    }
+                    break;
+
+                case 'lu':
+                    if (matrixA.length !== matrixA[0].length) {
+                        alert('Matrix harus persegi untuk dekomposisi LU');
+                        return;
+                    }
+                    result = luDecomposition(matrixA);
+                    if (result.L && result.U) {
+                        document.getElementById('luResult').style.display = 'block';
+                        tampilkanMatrix('lMatrix', result.L);
+                        tampilkanMatrix('uMatrix', result.U);
+                    }
+                    break;
+
+                case 'rank':
+                    result = calculateRank(matrixA);
+                    document.getElementById('rankResult').style.display = 'block';
+                    document.getElementById('rankValue').textContent = result.rank;
+                    break;
+            }
+
+            if (result.steps && showSteps) {
+                document.getElementById('stepsContainer').style.display = 'block';
+                document.getElementById('steps').textContent = result.steps;
+            }
+        }
+
+        // Initialize
+        generateMatrixInputs();
+    </script>
+</body>
+</html>
